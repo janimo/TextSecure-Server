@@ -112,6 +112,8 @@ public class AccountController {
       case "voice":
         rateLimiters.getVoiceDestinationLimiter().validate(number);
         break;
+      case "dev":
+        break;
       default:
         throw new WebApplicationException(Response.status(422).build());
     }
@@ -125,6 +127,9 @@ public class AccountController {
       smsSender.deliverSmsVerification(number, verificationCode.getVerificationCodeDisplay());
     } else if (transport.equals("voice")) {
       smsSender.deliverVoxVerification(number, verificationCode.getVerificationCodeSpeech());
+    } else if (transport.equals("dev")) {
+        logger.info("Verification code is: "+ verificationCode.getVerificationCodeDisplay());
+        return Response.ok(verificationCode.getVerificationCodeDisplay(), "application/text").build();
     }
 
     return Response.ok().build();
